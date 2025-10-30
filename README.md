@@ -5,7 +5,7 @@
 A modern web application for browsing and booking hostels. Users can filter, sort, and view detailed hostel information. Authenticated users can manage their profile and access protected pages.
 
 ## Live URL
-[Click here to visit the live site](https://hotel-management-9rb.pages.dev/)
+[https://hotel-management-9rb.pages.dev/]
 
 ---
 
