@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../firebase/firebase.config";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 
 const Login = () => {
@@ -9,7 +9,12 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+
   const navigate = useNavigate();
+  const location = useLocation();
+
+
+  const from = location.state?.from?.pathname || "/";
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -29,19 +34,27 @@ const Login = () => {
     }
 
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => navigate("/"))
-      .catch((err) => setError(err.message));
+      .then(() => navigate(from, { replace: true }))
+      .catch((err) => {
+        if (err.code === "auth/user-not-found") {
+          setError("No user found with this email.");
+        } else if (err.code === "auth/wrong-password") {
+          setError("Incorrect password. Please try again.");
+        } else {
+          setError(err.message);
+        }
+      });
   };
 
   const handleGoogleLogin = () => {
     signInWithPopup(auth, googleProvider)
-      .then(() => navigate("/"))
+      .then(() => navigate(from, { replace: true })) 
       .catch((err) => setError(err.message));
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-base-200 px-4">
-      <div className="card w-full max-w-md bg-base-100 p-6 shadow-xl">
+      <div className="card w-full max-w-md bg-base-100 p-6 shadow-xl rounded-lg">
         <h2 className="text-3xl font-bold mb-6 text-center text-base-content">
           Login
         </h2>
@@ -82,7 +95,7 @@ const Login = () => {
 
         <button
           onClick={handleGoogleLogin}
-          className="btn btn-outline w-full mt-3 flex items-center justify-center gap-2"
+          className="btn btn-outline w-full mt-3 flex items-center justify-center gap-2 hover:bg-base-100 transition-colors"
         >
           <FaGoogle /> Login with Google
         </button>
@@ -95,7 +108,11 @@ const Login = () => {
         </p>
 
         <p className="mt-2 text-center text-base-content/70">
-          <Link to="/forget-password" className="underline text-primary">
+          <Link
+            to="/forgot-password"
+            state={{ email }}
+            className="underline text-primary"
+          >
             Forgot Password?
           </Link>
         </p>

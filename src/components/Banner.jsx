@@ -5,21 +5,21 @@ const Banner = () => {
   const slides = [
     {
       id: 1,
-      img: "https://i.ibb.co/qYPDfV4x/room.jpg",
+      img: "https://i.ibb.co.com/twkdNrT3/room2.jpg",
       title: "Luxury Rooms",
-      text: "Experience comfort and elegance in our premium suites.",
+      text: "Experience comfort and elegance in our premium suites",
     },
     {
       id: 2,
-      img: "https://i.ibb.co/RGbJHs4S/dining.jpg",
+      img: "https://i.ibb.co.com/6cT9jp9W/finedining.jpg",
       title: "Fine Dining",
-      text: "Savor gourmet dishes at our exclusive restaurant.",
+      text: "Savor gourmet dishes at our exclusive restaurant",
     },
     {
       id: 3,
-      img: "https://i.ibb.co/qLHt3jcS/spa.jpg",
-      title: "Spa & Wellness",
-      text: "Relax and rejuvenate in our world-class spa facilities.",
+      img: "https://i.ibb.co.com/RkD5yj1J/gym.jpg",
+      title: "Gymnesium",
+      text: "Experience luxurious gym in our hotels",
     },
   ];
 
@@ -46,13 +46,13 @@ const Banner = () => {
         ></motion.div>
       </AnimatePresence>
 
-      <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center text-white p-4">
+      <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-center text-white p-4">
         <motion.h2
           key={slides[current].title}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-bold mb-2 drop-shadow-lg"
+          className="text-4xl md:text-5xl font-bold mb-2 drop-shadow-lg text-pink-400"
         >
           {slides[current].title}
         </motion.h2>
@@ -62,7 +62,7 @@ const Banner = () => {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="max-w-md md:max-w-lg  drop-shadow-md"
+          className="max-w-md md:max-w-lg  drop-shadow-md text-gray-400 font-semibold text-xl"
         >
           {slides[current].text}
         </motion.p>

@@ -14,6 +14,7 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("default");
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     fetch("/hotels.json")
@@ -34,27 +35,24 @@ const Home = () => {
     setSelectedCategory(category);
     setSortBy("default");
 
-    if (category === "all") {
-      setFilteredHotels(hotels);
-    } else if (category === "popular") {
-      // Most Popular -> highest rating
+    if (category === "all") setFilteredHotels(hotels);
+    else if (category === "popular") {
       const sorted = [...hotels].sort(
         (a, b) => (b.rating || 0) - (a.rating || 0)
       );
       setFilteredHotels(sorted);
     } else if (category === "luxury") {
-      // Most Luxurious -> highest price
       const sorted = [...hotels].sort(
         (a, b) => (b.pricePerNight || 0) - (a.pricePerNight || 0)
       );
       setFilteredHotels(sorted);
     } else if (category === "nearby") {
-      // Nearby -> location = Chittagong
       const filtered = hotels.filter((h) =>
         h.location.toLowerCase().includes("chittagong")
       );
       setFilteredHotels(filtered);
     }
+    setShowAll(false);
   };
 
   const handleSort = (value) => {
@@ -74,18 +72,25 @@ const Home = () => {
     setFilteredHotels(arr);
   };
 
+  const displayedHotels = showAll ? filteredHotels : filteredHotels.slice(0, 9);
+
   return (
     <div className="max-w-[1280px] mx-auto px-4 py-6">
-        <h1 className="font-bold text-4xl">Total Hostels<span className="text-red-500">({hotels.length})</span></h1>
+      <h1 className="font-bold text-4xl mb-6">
+        Total Hostels <span className="text-red-500">({hotels.length})</span>
+      </h1>
+
       <div className="flex gap-6">
         {/* Left sidebar */}
-        <aside className="w-60 bg-base-200 hidden md:flex flex-col gap-3 sticky top-0">
+        <aside className="w-60 hidden md:flex flex-col gap-3 sticky top-4 h-[calc(100vh-1rem)] overflow-y-auto p-4 bg-base-200 rounded-lg shadow-md">
           {FILTER_BUTTONS.map((b) => (
             <button
               key={b.key}
               onClick={() => handleCategory(b.key)}
-              className={`btn text-sm justify-start ${
-                selectedCategory === b.key ? "btn-primary" : "btn-ghost"
+              className={`btn text-sm justify-start w-full rounded-lg transition-all duration-200 ${
+                selectedCategory === b.key
+                  ? "bg-primary text-white hover:bg-primary-focus"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
             >
               {b.label}
@@ -93,11 +98,8 @@ const Home = () => {
           ))}
         </aside>
 
-        {/* Main area */}
         <div className="flex-1">
-          {/* top row */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-            {/* small screen horizontal filter buttons */}
             <div className="md:hidden flex gap-2 overflow-x-auto pb-1">
               {FILTER_BUTTONS.map((b) => (
                 <button
@@ -112,7 +114,6 @@ const Home = () => {
               ))}
             </div>
 
-            {/* Sort dropdown right side */}
             <div className="flex items-center gap-3 justify-end md:justify-end w-full md:w-auto">
               <label className="text-sm text-gray-600 hidden md:block">
                 Sort by
@@ -131,7 +132,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* content */}
           {loading ? (
             <div className="flex items-center justify-center py-24">
               <span className="loading loading-dots loading-lg"></span>
@@ -141,11 +141,23 @@ const Home = () => {
               No hotels found for this category.
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredHotels.map((hotel) => (
-                <HotelCard key={hotel.id} hotel={hotel} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayedHotels.map((hotel) => (
+                  <HotelCard key={hotel.id} hotel={hotel} />
+                ))}
+              </div>
+              {filteredHotels.length > 9 && (
+                <div className="flex justify-center mt-6">
+                  <button
+                    onClick={() => setShowAll(!showAll)}
+                    className="btn btn-primary hover:btn-secondary transition-all duration-300"
+                  >
+                    {showAll ? "Show Less" : "Show More"}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
