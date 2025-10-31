@@ -1,55 +1,85 @@
-## Project Name
-**🏨 Hostel Booking Web App**
+# 🏨 Hostel Booking Web App
 
-## Purpose
-A modern web application for browsing and booking hostels. Users can filter, sort, and view detailed hostel information. Authenticated users can manage their profile and access protected pages.
 
-## Live URL
-[https://hotel-management-9rb.pages.dev/]
+## Table of Contents
+1. [Project Overview](#project-overview)
+2. [Live Demo](#live-demo)
+3. [Features](#features)
+4. [Routes Overview](#routes-overview)
+5. [Screenshots](#screenshots)
+6. [Tech Stack & NPM Packages](#tech-stack--npm-packages)
+7. [Installation & Setup](#installation--setup)
+8. [Firebase Configuration](#firebase-configuration)
+9. [Usage](#usage)
+10. [Contribution](#contribution)
+11. [License](#license)
 
 ---
 
-## Key Features
+## Project Overview
+**Hostel Booking Web App** is a modern web application that allows users to browse, filter, sort, and book hostels. Authenticated users can:
+- Access protected pages
+- Maintain a wishlist (Favorites)
+- Book hotels with check-in/out dates
+- Submit and manage reviews
+- Update their profile
+- View booked hotels in a cart
 
-### 1. Home Page
-- Browse all hostels loaded from `hotels.json`.
-- **Filters:**
-  - All Hotels
-  - Most Popular (highest rating)
-  - Most Luxurious (highest price)
-  - Nearby (based on location, e.g., Chittagong)
-- **Sorting Options:**
-  - Price: Low to High / High to Low
-  - Rating: High to Low
-  - Rooms: High to Low
-- Responsive layout with sticky sidebar on desktop and horizontal scroll on mobile.
+The app is **responsive**, mobile-first, and includes **smooth UI/UX interactions**.
 
-### 2. Hostel Details Page (Protected)
-- Shows all details of a selected hostel.
-- Only accessible for logged-in users.
-- Non-authenticated users are redirected to the login page.
+---
 
-### 3. Authentication
-- Login and Sign Up functionality using Firebase.
-- Session-based access control for protected pages.
+## Live Demo
+[🔗https://hotel-management-9rb.pages.dev/]
+
+---
+
+## Features
+
+### Home Page
+- Browse hostels from `hotels.json`.
+- **Filters:** All, Most Popular, Most Luxurious, Nearby.
+- **Sort Options:** Price (Low ↔ High), Rating (High → Low), Rooms (High → Low).
+- Sticky sidebar (desktop) and horizontal scroll (mobile).
+
+### Hostel Details Page (Protected)
+- Book hostels with check-in/out date selection.
+- Add/remove from **wishlist**.
+- Cancel bookings.
+- Display **user reviews** and review distribution chart.
+- Real-time toast notifications for actions.
+- **Custom loading spinner** during page fetch.
+
+### Wishlist / Favorites
+- Add hostels to wishlist using heart icon.
+- Wishlist count shown on navbar.
+- View all favorites on `/favorites` page.
+- Remove hotels from wishlist with notification.
+
+### Booked Hotels Cart
+- Show booked hostels on `/booked-hotels`.
+- Cart count displayed on navbar.
+- Cancel bookings with confirmation toast.
+
+### Authentication
+- Login / Register using Firebase.
 - Google login integration.
+- Protected routes for logged-in users.
 
-### 4. Forgot Password
-- Accessible via "Forgot Password?" link on login page.
-- Email input is pre-filled if previously entered.
-- Reset password redirects the user to Gmail (or configured email service).
+### Forgot Password
+- Reset password via email.
+- Pre-filled email input if previously entered.
 
-### 5. Update User Information
-- Accessible on `/my-profile`.
-- Form allows updating:
-  - Photo URL
-  - Name
-- Clicking **Update** saves changes to the user profile.
+### Update Profile
+- Update Photo URL and Name on `/update-profile`.
+- Save changes with real-time feedback.
 
-### 6. Responsive & Modern UI
+### Responsive & Modern UI
 - Built with Tailwind CSS.
-- Mobile-first design with smooth hover effects.
-- Uses React Icons for UI elements.
+- Mobile-first design.
+- Smooth hover effects.
+- React Icons for UI elements.
+- Favicon included.
 
 ---
 
@@ -59,6 +89,8 @@ A modern web application for browsing and booking hostels. Users can filter, sor
 |----------------------------|-------------------------|-----------|
 | `/`                        | Home                    | No        |
 | `/hostel/:id`              | Hostel Details          | Yes       |
+| `/favorites`               | Favorites / Wishlist    | Yes       |
+| `/booked-hotels`           | Booked Hotels / Cart    | Yes       |
 | `/login`                   | Login                   | No        |
 | `/register`                | Register                | No        |
 | `/forgot-password`         | Forgot Password         | No        |
@@ -67,18 +99,15 @@ A modern web application for browsing and booking hostels. Users can filter, sor
 
 ---
 
-## NPM Packages Used
-- `react` – Core UI library.
-- `react-router-dom` – Page routing and protected routes.
-- `firebase` – Authentication and user management.
-- `tailwindcss` – Utility-first CSS framework.
-- `react-icons` – UI icons.
 
----
+## Tech Stack & NPM Packages
+- **Frontend:** React, Tailwind CSS, React Icons
+- **Routing:** react-router-dom
+- **Auth:** Firebase Authentication
+- **Notifications:** react-toastify
+- **Charts:** recharts
+- **Date Picker:** react-datepicker
+- **State Management:** React Context API
+- **Hosting:** GitHub Pages / Vite
 
-## Installation & Setup
-
-1. Clone the repository:
-```bash
-git clone YOUR_REPO_URL
-cd YOUR_PROJECT_FOLDER
+**NPM Packages Used:**
