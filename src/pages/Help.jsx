@@ -21,14 +21,13 @@ const FAQS = [
   {
     question: "How can I contact support?",
     answer:
-      "You can reach out via the Contact form or email us at support@booking.com.",
+      "You can reach out via the Contact form or email us at support booking@gmail.com.",
   },
 ];
 
 const Help = () => {
   return (
     <div className="max-w-[1280px] mx-auto px-4 py-12">
-      {/* Hero */}
       <section className="text-center mb-10">
         <h1 className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
           Help & Support
@@ -38,7 +37,6 @@ const Help = () => {
         </p>
       </section>
 
-      {/* FAQ Section */}
       <section className="grid gap-4">
         {FAQS.map((faq, idx) => (
           <div
@@ -51,17 +49,18 @@ const Help = () => {
         ))}
       </section>
 
-      {/* Contact Section */}
       <section className="mt-10 p-4 bg-blue-50 rounded-lg text-center">
         <h2 className="text-xl font-bold text-blue-600 mb-2">
           Still need help?
         </h2>
         <p className="text-gray-500 text-sm">
-          Please email at <Link className="underline text-red-500">booking@gmail.com</Link>
+          Please email at{" "}
+          <Link className="underline text-red-500">booking@gmail.com</Link>
         </p>
         <p>or</p>
-        <button className="btn btn-accent">Contact Us <IoCall></IoCall></button>
-        
+        <button className="btn btn-accent">
+          Contact Us <IoCall></IoCall>
+        </button>
       </section>
     </div>
   );

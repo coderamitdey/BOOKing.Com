@@ -5,16 +5,11 @@ const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
- 
-  if (loading) {
-    return <div className="py-24 text-center">Loading...</div>;
-  }
+  if (loading) return <div className="py-24 text-center">Loading...</div>;
 
-  
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
-
 
   return children;
 };

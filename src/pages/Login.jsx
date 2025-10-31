@@ -3,6 +3,8 @@ import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../firebase/firebase.config";
 import { Link, useNavigate, useLocation } from "react-router";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,9 +14,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-
-
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from || "/";
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -34,31 +34,37 @@ const Login = () => {
     }
 
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => navigate(from, { replace: true }))
+      .then(() => {
+        toast.success("Logged in successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+          onClose: () => navigate(from, { replace: true }),
+        });
+      })
       .catch((err) => {
-        if (err.code === "auth/user-not-found") {
-          setError("No user found with this email.");
-        } else if (err.code === "auth/wrong-password") {
-          setError("Incorrect password. Please try again.");
-        } else {
-          setError(err.message);
-        }
+        if (err.code === "auth/user-not-found") setError("No user found with this email.");
+        else if (err.code === "auth/wrong-password") setError("Incorrect password.");
+        else setError(err.message);
       });
   };
 
   const handleGoogleLogin = () => {
     signInWithPopup(auth, googleProvider)
-      .then(() => navigate(from, { replace: true })) 
+      .then(() => {
+        toast.success("Logged in successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+          onClose: () => navigate(from, { replace: true }),
+        });
+      })
       .catch((err) => setError(err.message));
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-base-200 px-4">
+      <ToastContainer />
       <div className="card w-full max-w-md bg-base-100 p-6 shadow-xl rounded-lg">
-        <h2 className="text-3xl font-bold mb-6 text-center text-base-content">
-          Login
-        </h2>
-
+        <h2 className="text-3xl font-bold mb-6 text-center text-base-content">Login</h2>
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
         <form onSubmit={handleLogin} className="space-y-4">
@@ -70,7 +76,6 @@ const Login = () => {
             className="input input-bordered w-full"
             required
           />
-
           <div className="relative w-full">
             <input
               type={showPassword ? "text" : "password"}
@@ -87,34 +92,18 @@ const Login = () => {
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
-
-          <button type="submit" className="btn btn-primary w-full">
-            Login
-          </button>
+          <button type="submit" className="btn btn-primary w-full">Login</button>
         </form>
 
         <button
           onClick={handleGoogleLogin}
-          className="btn btn-outline w-full mt-3 flex items-center justify-center gap-2 hover:bg-base-100 transition-colors"
+          className="btn btn-outline w-full mt-3 flex items-center justify-center gap-2"
         >
           <FaGoogle /> Login with Google
         </button>
 
         <p className="mt-4 text-center text-base-content/70">
-          Don’t have an account?{" "}
-          <Link to="/register" className="underline text-primary">
-            Register
-          </Link>
-        </p>
-
-        <p className="mt-2 text-center text-base-content/70">
-          <Link
-            to="/forgot-password"
-            state={{ email }}
-            className="underline text-primary"
-          >
-            Forgot Password?
-          </Link>
+          Don’t have an account? <Link to="/register" className="underline text-primary">Register</Link>
         </p>
       </div>
     </div>

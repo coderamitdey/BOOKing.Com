@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import HotelCard from "../components/HoterlCard";
+import HotelCard from "../components/HotelCard";
+import FilterControls from "../components/FilterControls"; // নতুন ফাইল
 
 const FILTER_BUTTONS = [
   { key: "all", label: "All Hotels" },
@@ -16,7 +17,13 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
 
+  const [search, setSearch] = useState("");
+  const [ratingFilter, setRatingFilter] = useState(0);
+  const [priceFilter, setPriceFilter] = useState(3000);
+
+  // Fetch hotels
   useEffect(() => {
+    setLoading(true);
     fetch("/hotels.json")
       .then((res) => res.json())
       .then((data) => {
@@ -31,54 +38,85 @@ const Home = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  // Category filter
   const handleCategory = (category) => {
     setSelectedCategory(category);
     setSortBy("default");
 
-    if (category === "all") setFilteredHotels(hotels);
-    else if (category === "popular") {
-      const sorted = [...hotels].sort(
-        (a, b) => (b.rating || 0) - (a.rating || 0)
-      );
-      setFilteredHotels(sorted);
+    let updated = [...hotels];
+    if (category === "popular") {
+      updated.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     } else if (category === "luxury") {
-      const sorted = [...hotels].sort(
-        (a, b) => (b.pricePerNight || 0) - (a.pricePerNight || 0)
-      );
-      setFilteredHotels(sorted);
+      updated.sort((a, b) => (b.pricePerNight || 0) - (a.pricePerNight || 0));
     } else if (category === "nearby") {
-      const filtered = hotels.filter((h) =>
+      updated = updated.filter((h) =>
         h.location.toLowerCase().includes("chittagong")
       );
-      setFilteredHotels(filtered);
     }
+    setFilteredHotels(updated);
     setShowAll(false);
   };
 
+  // Sort filter
   const handleSort = (value) => {
     setSortBy(value);
     const arr = [...filteredHotels];
 
-    if (value === "priceLowHigh")
-      arr.sort((a, b) => (a.pricePerNight || 0) - (b.pricePerNight || 0));
-    else if (value === "priceHighLow")
-      arr.sort((a, b) => (b.pricePerNight || 0) - (a.pricePerNight || 0));
-    else if (value === "ratingHighLow")
-      arr.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    else if (value === "roomsHighLow")
-      arr.sort((a, b) => (b.rooms || 0) - (a.rooms || 0));
+    if (value === "priceLowHigh") arr.sort((a, b) => (a.pricePerNight || 0) - (b.pricePerNight || 0));
+    else if (value === "priceHighLow") arr.sort((a, b) => (b.pricePerNight || 0) - (a.pricePerNight || 0));
+    else if (value === "ratingHighLow") arr.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    else if (value === "roomsHighLow") arr.sort((a, b) => (b.rooms || 0) - (a.rooms || 0));
     else if (value === "default") handleCategory(selectedCategory);
 
     setFilteredHotels(arr);
   };
 
+  // Multi-filter: search + rating + price
+  useEffect(() => {
+    let filtered = [...hotels];
+
+    if (search) {
+      filtered = filtered.filter(
+        (h) =>
+          h.name.toLowerCase().includes(search.toLowerCase()) ||
+          h.location.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    if (ratingFilter > 0) {
+      filtered = filtered.filter((h) => h.rating >= ratingFilter);
+    }
+
+    filtered = filtered.filter((h) => h.pricePerNight <= priceFilter);
+
+    setFilteredHotels(filtered);
+  }, [search, ratingFilter, priceFilter, hotels]);
+
   const displayedHotels = showAll ? filteredHotels : filteredHotels.slice(0, 9);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-[1280px] mx-auto px-4 py-6">
       <h1 className="font-bold text-4xl mb-6">
-        Total Hostels <span className="text-red-500">({hotels.length})</span>
+        Total Hotels <span className="text-red-500">({hotels.length})</span>
       </h1>
+
+      {/* Filter Controls (search + rating + price) */}
+      <FilterControls
+        search={search}
+        setSearch={setSearch}
+        rating={ratingFilter}
+        setRating={setRatingFilter}
+        price={priceFilter}
+        setPrice={setPriceFilter}
+      />
 
       <div className="flex gap-6">
         {/* Left sidebar */}
@@ -115,9 +153,7 @@ const Home = () => {
             </div>
 
             <div className="flex items-center gap-3 justify-end md:justify-end w-full md:w-auto">
-              <label className="text-sm text-gray-600 hidden md:block">
-                Sort by
-              </label>
+              <label className="text-sm text-gray-600 hidden md:block">Sort by</label>
               <select
                 value={sortBy}
                 onChange={(e) => handleSort(e.target.value)}
@@ -132,11 +168,7 @@ const Home = () => {
             </div>
           </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-24">
-              <span className="loading loading-dots loading-lg"></span>
-            </div>
-          ) : filteredHotels.length === 0 ? (
+          {filteredHotels.length === 0 ? (
             <div className="text-center py-12 text-gray-600">
               No hotels found for this category.
             </div>
@@ -147,7 +179,7 @@ const Home = () => {
                   <HotelCard key={hotel.id} hotel={hotel} />
                 ))}
               </div>
-              {filteredHotels.length > 9 && (
+              {selectedCategory === "all" && filteredHotels.length > 9 && (
                 <div className="flex justify-center mt-6">
                   <button
                     onClick={() => setShowAll(!showAll)}

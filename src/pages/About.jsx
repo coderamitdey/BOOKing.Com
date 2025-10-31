@@ -1,10 +1,9 @@
-// src/pages/About.jsx
 import React from "react";
 
 const About = () => {
   return (
     <div className="max-w-[1280px] mx-auto px-4 py-12">
-      {/* Hero Section */}
+
       <section className="flex flex-col md:flex-row items-center gap-8 mb-12">
         <div className="md:w-1/2">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-blue-600">
@@ -26,7 +25,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Mission & Vision */}
+    
       <section className="grid md:grid-cols-2 gap-8 mb-12">
         <div className="p-6 bg-blue-50 rounded-lg shadow hover:shadow-lg transition-shadow">
           <h2 className="text-2xl font-bold mb-3 text-blue-600">Our Mission</h2>
@@ -46,7 +45,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Core Values */}
+     
       <section>
         <h2 className="text-3xl font-bold mb-6 text-blue-600">Core Values</h2>
         <div className="grid md:grid-cols-3 gap-6">

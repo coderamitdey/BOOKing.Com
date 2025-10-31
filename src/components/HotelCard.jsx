@@ -7,10 +7,10 @@ const HotelCard = ({ hotel }) => {
       <div className="card bg-base-100 shadow-md rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
         <div className="p-3">
           <img
-          src={hotel.image_url}
-          alt={hotel.name}
-          className="w-full h-48 rounded-md object-cover"
-        />
+            src={hotel.image_url}
+            alt={hotel.name}
+            className="w-full h-48 rounded-md object-cover"
+          />
         </div>
         <div className="p-4">
           <h2 className="text-xl font-bold">{hotel.name}</h2>
@@ -29,7 +29,6 @@ const HotelCard = ({ hotel }) => {
                 {a}
               </span>
             ))} */}
-            
           </div>
         </div>
       </div>

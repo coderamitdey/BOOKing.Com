@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../firebase/firebase.config";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -11,7 +13,10 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -33,7 +38,13 @@ const Register = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         updateProfile(userCredential.user, { displayName: name, photoURL })
-          .then(() => navigate("/"))
+          .then(() => {
+            toast.success("Registered successfully!", {
+              position: "top-right",
+              autoClose: 2000,
+              onClose: () => navigate(from, { replace: true }),
+            });
+          })
           .catch((err) => setError(err.message));
       })
       .catch((err) => setError(err.message));
@@ -41,17 +52,21 @@ const Register = () => {
 
   const handleGoogleRegister = () => {
     signInWithPopup(auth, googleProvider)
-      .then(() => navigate("/"))
+      .then(() => {
+        toast.success("Registered successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+          onClose: () => navigate(from, { replace: true }),
+        });
+      })
       .catch((err) => setError(err.message));
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-base-200 px-4">
+      <ToastContainer />
       <div className="card w-full max-w-md bg-base-100 p-6 shadow-xl">
-        <h2 className="text-3xl font-bold mb-6 text-center text-base-content">
-          Register
-        </h2>
-
+        <h2 className="text-3xl font-bold mb-6 text-center text-base-content">Register</h2>
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
         <form onSubmit={handleRegister} className="space-y-4">
@@ -69,7 +84,6 @@ const Register = () => {
             value={photoURL}
             onChange={(e) => setPhotoURL(e.target.value)}
             className="input input-bordered w-full"
-            required
           />
           <input
             type="email"
@@ -79,7 +93,6 @@ const Register = () => {
             className="input input-bordered w-full"
             required
           />
-
           <div className="relative w-full">
             <input
               type={showPassword ? "text" : "password"}
@@ -97,9 +110,7 @@ const Register = () => {
             </span>
           </div>
 
-          <button type="submit" className="btn btn-primary w-full">
-            Register
-          </button>
+          <button type="submit" className="btn btn-primary w-full">Register</button>
         </form>
 
         <button
@@ -110,10 +121,7 @@ const Register = () => {
         </button>
 
         <p className="mt-4 text-center text-base-content/70">
-          Already have an account?{" "}
-          <Link to="/login" className="underline text-primary">
-            Login
-          </Link>
+          Already have an account? <Link to="/login" className="underline text-primary">Login</Link>
         </p>
       </div>
     </div>

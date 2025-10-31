@@ -11,18 +11,11 @@ import MyProfile from "../pages/MyProfile";
 import UpdateProfile from "../pages/UpdateProfile";
 import NotFound from "../pages/NotFound";
 import HotelDetails from "../pages/HotelDetails";
-
-import { useAuth } from "../contexts/AuthContext";
 import BookedHotels from "../pages/BookedHotels";
 import Help from "../pages/Help";
+import FavoritesPage from "../pages/FavoritesPage"; 
 
-const PrivateRoute = ({ element }) => {
-  const { user, loading } = useAuth();
-
-  if (loading) return null; // Loading state, spinner optional
-
-  return user ? element : <Navigate to="/login" replace />;
-};
+import PrivateRoute from "../utils/PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -30,23 +23,47 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/about", element: <About /> },
-      { path: "/help", element: <Help></Help> },
+      { path: "/help", element: <Help /> },
+
       {
         path: "/hostel/:id",
-        element: <PrivateRoute element={<HotelDetails />} />,
+        element: (
+          <PrivateRoute>
+            <HotelDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/my-profile",
-        element: <PrivateRoute element={<MyProfile />} />,
+        element: (
+          <PrivateRoute>
+            <MyProfile />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/update-profile",
-        element: <PrivateRoute element={<UpdateProfile />} />,
+        element: (
+          <PrivateRoute>
+            <UpdateProfile />
+          </PrivateRoute>
+        ),
       },
-
       {
         path: "/booked-hotels",
-        element: <PrivateRoute element={<BookedHotels />} />,
+        element: (
+          <PrivateRoute>
+            <BookedHotels />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/favorites",
+        element: (
+          <PrivateRoute>
+            <FavoritesPage />
+          </PrivateRoute>
+        ),
       },
     ],
   },

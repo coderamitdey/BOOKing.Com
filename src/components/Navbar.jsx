@@ -1,22 +1,27 @@
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
+import { FaSignInAlt, FaUserPlus, FaHeart } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import bookingLogo from "../assets/booking.jpg";
-import { getBookedHotels } from "../utils/localStorage";
+import { getBookedHotels, getFavoriteHotels } from "../utils/localStorage";
 import { GrCart } from "react-icons/gr";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [wishlistCount, setWishlistCount] = useState(0);
 
   useEffect(() => {
-    setCartCount(getBookedHotels().length);
-    const interval = setInterval(() => {
+    const updateCounts = () => {
       setCartCount(getBookedHotels().length);
-    }, 1000); // update count if booking changes
+      setWishlistCount(getFavoriteHotels().length);
+    };
+
+    updateCounts(); // initial load
+
+    const interval = setInterval(updateCounts, 1000); // update every 1s
     return () => clearInterval(interval);
   }, []);
 
@@ -87,7 +92,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Center menu (lg+) */}
+        {/* Center menu (lg) */}
         <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2">
           <ul className="flex gap-6 text-lg font-medium">
             <li className="hover:bg-pink-200 rounded-xl p-2">
@@ -123,11 +128,25 @@ const Navbar = () => {
                 to="/booked-hotels"
                 className="relative btn btn-sm btn-primary"
                 title="Booked Hotels"
-              > <GrCart></GrCart>
-                Cart
+              >
+                <GrCart /> Cart
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 flex items-center justify-center text-xs rounded-full">
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white flex items-center justify-center text-xs rounded-full">
                     {cartCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Wishlist / Favorites */}
+              <Link
+                to="/favorites"
+                className="relative btn btn-sm btn-accent flex items-center gap-1"
+                title="Wishlist"
+              >
+                <FaHeart /> Wishlist
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 flex items-center justify-center text-xs rounded-full">
+                    {wishlistCount}
                   </span>
                 )}
               </Link>

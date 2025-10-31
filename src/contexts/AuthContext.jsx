@@ -2,10 +2,10 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase/firebase.config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
-// 1️⃣ Create context
+
 export const AuthContext = createContext();
 
-// 2️⃣ Provider component
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,5 +31,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// 3️⃣ Custom hook for easier access
+
 export const useAuth = () => useContext(AuthContext);
